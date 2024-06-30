@@ -111,111 +111,6 @@ function createTask(x, y) {
     });
 }
 
-// function createTask(x, y) {
-//     // Create a textarea element
-//     let task = document.createElement('textarea');
-//     task.className = 'task';
-//     task.style.left = x + 'px';
-//     task.style.top = y + 'px';
-//     task.placeholder = 'New Task';
-//     task.style.resize = 'horizontal'; // Allow only horizontal resizing
-//     task.style.overflow = 'hidden'; // Hide scrollbars
-//     task.style.boxSizing = 'border-box';
-//     task.style.width = '200px'; // Default width
-//     task.style.minHeight = '50px'; // Minimum height
-//     task.completed = false; // New property to track completion status
-    
-//     // Append task to the app container
-//     document.getElementById('app').appendChild(task);
-//     tasks.push(task);
-
-//     // Adjust height based on content
-//     task.addEventListener('input', adjustHeight);
-//     adjustHeight({ target: task });
-
-//     let offsetX, offsetY;
-
-//     task.addEventListener('mousedown', function(event) {
-//         if (event.target === task && !isResizing) {
-//             if (event.ctrlKey) {
-//                 // Start linking if Ctrl key is pressed
-//                 if (!isLinking) {
-//                     startTask = task;
-//                     isLinking = true;
-//                 } else {
-//                     createLink(startTask, task);
-//                     isLinking = false;
-//                     startTask = null;
-//                 }
-//             } else if (event.button === 0) { // Left mouse button
-//                 isDragging = true;
-//                 currentTask = task;
-//                 offsetX = event.clientX - task.getBoundingClientRect().left;
-//                 offsetY = event.clientY - task.getBoundingClientRect().top;
-
-//                 document.addEventListener('mousemove', moveTask);
-//                 document.addEventListener('mouseup', stopMoving);
-//             }
-//         }
-//     });
-
-//     task.addEventListener('mousemove', function(event) {
-//         if (event.target === task) {
-//             const rect = task.getBoundingClientRect();
-//             const rightEdge = rect.right - event.clientX;
-            
-//             if (rightEdge < 10) {
-//                 task.style.cursor = 'ew-resize';
-//                 isResizing = true;
-//             } else {
-//                 task.style.cursor = 'move';
-//                 isResizing = false;
-//             }
-//         }
-//     });
-
-//     // Add contextmenu event listener for right-click
-//     task.addEventListener('contextmenu', function(event) {
-//         event.preventDefault(); // Prevent the default context menu
-//         toggleTaskCompletion(task);
-//     });
-
-//     function moveTask(event) {
-//         if (isDragging) {
-//             currentTask.style.left = (event.clientX - offsetX) + 'px';
-//             currentTask.style.top = (event.clientY - offsetY) + 'px';
-//             updateLinks();
-//         }
-//     }
-
-//     function stopMoving(event) {
-//         isDragging = false;
-//         document.removeEventListener('mousemove', moveTask);
-//         document.removeEventListener('mouseup', stopMoving);
-//     }
-
-//     // Prevent the textarea from capturing the click event when we're trying to create a new task
-//     task.addEventListener('click', function(event) {
-//         event.stopPropagation();
-//     });
-
-//     // Add keydown event listener to handle Enter key press and Delete key press
-//     task.addEventListener('keydown', function(event) {
-//         if (event.key === 'Enter') {
-//             event.preventDefault(); // Prevent default behavior (new line)
-//             task.blur(); // Unfocus the textarea
-//         } else if (event.key === 'Delete') {
-//             event.preventDefault();
-//             removeTask(task);
-//         }
-//     });
-
-//     task.addEventListener('contextmenu', function(event) {
-//         event.preventDefault(); // Prevent the default context menu
-//         toggleTaskCompletion(task);
-//     });
-// }
-
 // Toggle task completion status
 function toggleTaskCompletion(taskContainer) {
     taskContainer.completed = !taskContainer.completed;
@@ -241,10 +136,18 @@ function createLink(task1, task2) {
     const link = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     link.setAttribute('stroke', 'black');
     link.setAttribute('stroke-width', '2');
+    link.setAttribute('pointer-events', 'stroke'); // Ensure events are detected over the stroke
     links.push({ line: link, start: task1, end: task2 });
     updateLinkPosition(link, task1, task2);
     getSVGCanvas().appendChild(link);
+
+    // Add contextmenu event listener to the link
+    link.addEventListener('contextmenu', function(event) {
+        event.preventDefault(); // Prevent the default context menu
+        removeLink(link);
+    });
 }
+
 
 // Update position of all links
 function updateLinks() {
@@ -291,6 +194,12 @@ function removeTask(task) {
         }
         return true;
     });
+}
+
+// Remove a link
+function removeLink(link) {
+    link.remove();
+    links = links.filter(l => l.line !== link);
 }
 
 // Event listener for clicking on the screen
