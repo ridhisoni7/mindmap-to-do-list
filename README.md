@@ -1,8 +1,10 @@
 # To-Do Map
-A quick software solution to the need for a paper-like unstructured, visual and minimal to-do list when most apps tend to be heavily restrained in the way features can be used. This app is a step toward incorporating the visualness and flexibility of pen-and-paper with the convenience of a digital application. 
+A quick software solution to the need for a paper-like unstructured, visual and minimal to-do list when most apps tend to be heavily restrained in the way features can be used. This webapp builds on the traditional to-do list and is a step toward incorporating the visualness and flexibility of pen-and-paper with the convenience of a digital application. 
 
 # Commands
 - Click anywhere to add a new task.
 - Ctrl+Click two tasks to link them together, forming a 'grouping'.
 - Select a task and use the delete button to delete it.
 - Drag and drop tasks anywhere on the screen.
+- Right click a task to mark it as complete/incomplete.
+- Right click a link to delete it.
